@@ -513,15 +513,20 @@
       -webkit-overflow-scrolling:touch;
     }
 
-    .logMinWidth{ min-width:520px; }
+    .logMinWidth{ min-width:100%; width:100%; }
 
     .logHead,
     .logRow{
       display:grid;
-      grid-template-columns:var(--log-cols);
+      grid-template-columns:minmax(120px, 1.15fr) minmax(100px, 0.9fr) minmax(140px, 1.1fr) minmax(140px, 1fr) minmax(110px, 0.8fr);
       align-items:center;
       width:100%;
       column-gap:0;
+    }
+
+    .requestTable .logHead,
+    .requestTable .logRow{
+      grid-template-columns:minmax(120px, 1.1fr) minmax(100px, 0.8fr) minmax(140px, 1.1fr) minmax(120px, 0.95fr) minmax(140px, 1fr) minmax(110px, 0.8fr);
     }
 
     .logHead > div,
@@ -552,12 +557,12 @@
     .logQty{
       display:flex;
       align-items:center;
-      justify-content:flex-start;
+      justify-content:center;
       min-height:52px;
-      text-align:left;
+      text-align:center;
     }
 
-    .logHeadLabel{ font-size:12px; color:var(--muted); font-weight:600; white-space:nowrap; }
+    .logHeadLabel{ width:100%; font-size:12px; color:var(--muted); font-weight:600; white-space:nowrap; text-align:center; }
 
     .logHead .hselect{
       width:100%;
@@ -704,10 +709,10 @@
       object-fit:contain;
       display:block;
     }
-    .detailImageFrame{ border:1px solid #dfdfdf; border-top:none; padding:22px; }
-    .requestImgRow{ justify-content:flex-start; gap:22px; border:none; padding:0; }
-    .requestImgBox{ width:min(100%, 250px); aspect-ratio:0.72/1; background:#f6f6f3; }
-    .requestImgRow .requestImgBox + .requestImgBox{ border-left:none; padding-left:0; margin-left:0; }
+    .detailImageFrame{ border:none; border-top:none; padding:22px; }
+    .requestImgRow{ justify-content:center; gap:22px; border:none; padding:0; }
+    .requestImgBox{ width:min(100%, 250px); aspect-ratio:1 / 1; background:#f6f6f3; border:1px solid #dfdfdf; display:flex; align-items:center; justify-content:center; }
+    .requestImgRow .requestImgBox + .requestImgBox{ border-left:1px solid #dfdfdf; padding-left:0; margin-left:0; }
     .requestStatsGrid{ margin-top:24px; }
     .requestStatCard{ border:none; background:#f5f5f5; }
     .requestActionWrapLarge{ margin:18px 0 28px; }
@@ -752,6 +757,8 @@
       border-radius:0;
       padding:0 10px;
       font-size:12px;
+      text-align:center;
+      text-align-last:center;
       font-weight:600;
       background:#fff;
       outline:none;
@@ -1470,7 +1477,7 @@
       .detailLogoImage{ max-width:62px; }
       .detailLogoImage{ max-width:64px; }
       .detailImageFrame{ padding:14px 0 0; }
-      .requestImgRow{ gap:12px; padding:0; }
+      .requestImgRow{ gap:12px; padding:0; justify-content:center; }
       .requestImgRow .requestImgBox + .requestImgBox{ padding-left:0; margin-left:0; }
 
       .adminBottomRow,
