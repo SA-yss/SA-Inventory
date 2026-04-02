@@ -141,6 +141,25 @@
       border-color:#111;
     }
 
+    .topbarLogo{
+      display:none;
+      align-items:center;
+      justify-content:flex-end;
+      margin-left:auto;
+      padding-right:12px;
+      min-width:120px;
+    }
+
+    .topbarLogo.show{ display:flex; }
+
+    .topbarLogo img{
+      width:100%;
+      max-width:110px;
+      height:auto;
+      object-fit:contain;
+      display:block;
+    }
+
     .pill{
       height:36px;
       padding:0 16px;
@@ -616,53 +635,71 @@
     .fab:hover,
     .authBtn.confirm:hover{ opacity:.9; }
     .detailPaper.requestDetailPaper{ border-color:#d9d9d9; }
-    .detailPaperHead{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
-    .detailBrand{ display:none; }
-    .detailPaperBody{ padding:26px 22px 30px; }
-    .detailHeroGrid{
+    .detailPaperHead{
       display:grid;
-      grid-template-columns:minmax(0, 1fr) 140px;
-      align-items:start;
-      gap:20px;
-      border:1px solid #dfdfdf;
+      grid-template-columns:110px minmax(0, 1fr) 190px;
+      align-items:center;
+      gap:0;
+      min-height:62px;
+      padding:0;
+      border-bottom:1px solid #dfdfdf;
       background:#fff;
-      padding:18px 20px;
+      overflow:hidden;
     }
-    .detailHeroLabel{
-      display:block;
-      margin:0 0 8px;
+    .detailPaperHead > span:first-child{ display:none; }
+    .detailBrand{ display:none; }
+    .detailHeadMeta{
+      display:contents;
+      min-width:0;
+    }
+    .detailHeadMeta > div{
+      min-height:62px;
+      display:flex;
+      align-items:center;
+      padding:0 22px;
+      border-right:1px solid #e5e5e5;
+      background:#fff;
+      min-width:0;
+    }
+    .detailHeadMeta .detailHeroLabel{
+      margin:0;
       font-size:12px;
       font-weight:700;
       color:#555;
-      letter-spacing:0.08em;
-      text-transform:uppercase;
+      letter-spacing:0;
+      text-transform:none;
+      justify-content:flex-start;
+      white-space:nowrap;
     }
-    .detailHeroText{ min-width:0; }
-    .detailHeroName{
-      display:block;
+    .detailHeadMeta .detailHeroName{
       margin:0;
-      font-size:30px;
+      font-size:20px;
       font-weight:800;
       letter-spacing:-0.04em;
-      line-height:1.15;
+      line-height:1;
       word-break:keep-all;
+      justify-content:flex-start;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
-    .detailHeroSize{
-      display:block;
-      margin:10px 0 0;
+    .detailHeadMeta .detailHeroSize{
+      margin:0;
       font-size:14px;
       font-weight:600;
       color:#222;
+      justify-content:center;
+      white-space:nowrap;
     }
-    .detailLogoWrap{
-      display:flex;
-      align-items:flex-start;
-      justify-content:flex-end;
-      width:100%;
-    }
+    .detailHeadLogo{ display:none; }
+    .detailPaperBody{ padding:22px 22px 30px; }
+    .detailHeroGrid{ display:none; }
+    .detailHeroTop,
+    .detailHeroText,
+    .detailLogoWrap{ display:none; }
     .detailLogoImage{
       width:100%;
-      max-width:110px;
+      max-width:92px;
       height:auto;
       object-fit:contain;
       display:block;
@@ -1425,9 +1462,12 @@
       .logBox{ margin:0; }
       .logHead > div, .logRow > div{ padding:0 12px; }
       .detailBrand{ font-size:20px; }
-      .detailHeroGrid{ grid-template-columns:minmax(0, 1fr) 72px; gap:12px; padding:0 0 14px; }
-      .detailHeroName{ font-size:20px; }
-      .detailHeroSize{ font-size:12px; margin-top:8px; }
+      .detailPaperHead{ grid-template-columns:72px minmax(0, 1fr) 140px; }
+      .detailHeadMeta{ grid-template-columns:72px minmax(0, 1fr) 112px; }
+      .detailHeadMeta > div{ min-height:46px; padding:0 12px; }
+      .detailHeroName{ font-size:16px; }
+      .detailHeroSize{ font-size:12px; }
+      .detailLogoImage{ max-width:62px; }
       .detailLogoImage{ max-width:64px; }
       .detailImageFrame{ padding:14px 0 0; }
       .requestImgRow{ gap:12px; padding:0; }
@@ -1478,6 +1518,10 @@
       <div class="search" id="searchBox">
         <input id="q" placeholder="품목 검색" />
         <div class="pill" id="doSearch">검색</div>
+      </div>
+
+      <div class="topbarLogo" id="topbarLogo">
+        <img src="images/seoulauction-logo.png" alt="서울옥션 로고">
       </div>
     </div>
 
@@ -1812,6 +1856,7 @@
     const q = document.getElementById("q");
     const doSearch = document.getElementById("doSearch");
     const searchBox = document.getElementById("searchBox");
+    const topbarLogo = document.getElementById("topbarLogo");
     const homeLink = document.getElementById("homeLink");
     const topbar = document.getElementById("topbar");
     const topTitle = document.getElementById("topTitle");
@@ -2481,6 +2526,7 @@ async function insertLogsBulk(rows){
 
     function renderAuthShell(innerHtml){
       topbar.style.display = "none";
+      if(topbarLogo) topbarLogo.classList.remove("show");
       document.body.classList.remove("mode-request", "mode-list", "mode-admin");
 
       app.innerHTML = `
@@ -2717,6 +2763,7 @@ async function insertLogsBulk(rows){
 
     async function renderMainHome(){
       topbar.style.display = "none";
+      if(topbarLogo) topbarLogo.classList.remove("show");
       document.body.classList.remove("mode-request", "mode-list", "mode-admin");
 
       const isAdmin = await isAdminUser();
@@ -2766,6 +2813,7 @@ async function insertLogsBulk(rows){
     function renderHome(mode = "request"){
       topbar.style.display = "flex";
       searchBox.style.display = "flex";
+      if(topbarLogo) topbarLogo.classList.remove("show");
       setTopTitleByMode(mode);
       setBodyMode(mode);
 
@@ -2872,6 +2920,7 @@ async function insertLogsBulk(rows){
     function renderDetail(id, mode = "request"){
       topbar.style.display = "flex";
       searchBox.style.display = "none";
+      if(topbarLogo) topbarLogo.classList.toggle("show", mode === "request");
       setTopTitleByMode(mode);
       setBodyMode(mode);
 
@@ -2970,19 +3019,13 @@ async function insertLogsBulk(rows){
           <div class="paper detailPaper ${isRequest ? "requestDetailPaper" : ""}">
             <div class="paper-head detailPaperHead">
               <span>${escapeHtml(section.category)}</span>
-              <span class="detailBrand">Seoul Auction</span>
+              <div class="detailHeadMeta">
+                <div class="detailHeroLabel">${escapeHtml(section.category)}</div>
+                <div class="detailHeroName">${escapeHtml(it.name)}</div>
+                <div class="detailHeroSize">${escapeHtml(it.size || "")}</div>
+              </div>
             </div>
             <div class="paper-body detailPaperBody">
-              <div class="detailHeroGrid">
-                <div class="detailHeroText">
-                  <span class="detailHeroLabel">${escapeHtml(section.category)}</span>
-                  <h2 class="detailHeroName">${escapeHtml(it.name)}</h2>
-                  <span class="detailHeroSize">${escapeHtml(it.size || "")}</span>
-                </div>
-                <div class="detailLogoWrap">
-                  <img class="detailLogoImage" src="images/seoulauction-logo.png" alt="서울옥션 로고">
-                </div>
-              </div>
 
               <div class="detailImageFrame">
                 <div class="imgRow requestImgRow">
