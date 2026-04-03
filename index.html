@@ -1658,75 +1658,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-
-  // 선택 토글 (없으면 추가)
-function toggleRequestSelect(id){
-  const req = requests.find(r => r.id === id);
-  if(!req) return;
-  req.selected = !req.selected;
-  render();
-}
-
-// 선택된 요청 가져오기
-function getSelectedRequests(){
-  return requests.filter(r => r.selected);
-}
-
-// 승인 버튼
-document.getElementById("approveRequestsBtn")?.addEventListener("click", () => {
-  const selected = getSelectedRequests().filter(r => r.status === "pending");
-
-  if(selected.length === 0){
-    alert("선택된 대기 요청이 없습니다.");
-    return;
-  }
-
-  selected.forEach(req => {
-    const item = warehouse_items.find(i => i.id === req.item_id);
-    if(!item) return;
-
-    if(item.base_stock < req.qty){
-      alert(`${req.item_id} 재고 부족`);
-      return;
-    }
-
-    // 재고 차감
-    item.base_stock -= req.qty;
-
-    // 로그 생성
-    warehouse_logs.push({
-      id: crypto.randomUUID(),
-      item_id: req.item_id,
-      d: new Date().toISOString().slice(0,10),
-      type: "out",
-      dept: req.dept,
-      person: req.person,
-      qty: req.qty
-    });
-
-    req.status = "approved";
-    req.selected = false;
-  });
-
-  render();
-});
-
-// 반려 버튼
-document.getElementById("rejectRequestsBtn")?.addEventListener("click", () => {
-  const selected = getSelectedRequests().filter(r => r.status === "pending");
-
-  if(selected.length === 0){
-    alert("선택된 대기 요청이 없습니다.");
-    return;
-  }
-
-  selected.forEach(req => {
-    req.status = "rejected";
-    req.selected = false;
-  });
-
-  render();
-});  
     const SUPABASE_URL = "https://iznnctfnmeiqdjljounq.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_9p50RVtpPdmZOG2emGTDVg_NQ3bp8U8";
 
@@ -3198,8 +3129,7 @@ async function insertLogsBulk(rows){
             return `
               <div class="logRow clickable ${selected ? "selected" : ""}" 
      data-row="${escapeAttr(key)}" 
-     data-kind="${kind}"
-     onclick="toggleRequestSelect('${key}')">
+     data-kind="${kind}">
 
   <div class="logDate">${escapeHtml(formatKRDate(r.d))}</div>
   <div class="logType"><span class="typeBadge ${typeClass}">${escapeHtml(r.t)}</span></div>
@@ -3213,8 +3143,7 @@ async function insertLogsBulk(rows){
           return `
             <div class="logRow clickable ${selected ? "selected" : ""}" 
      data-row="${escapeAttr(key)}" 
-     data-kind="${kind}"
-     onclick="toggleRequestSelect('${key}')">
+     data-kind="${kind}">
 
   <div class="logDate">${escapeHtml(formatKRDate(r.d))}</div>
   <div class="logType"><span class="typeBadge ${typeClass}">${escapeHtml(r.t)}</span></div>
@@ -3406,9 +3335,9 @@ async function insertLogsBulk(rows){
 
           <div class="modal" id="addModal" aria-hidden="true">
             <div class="modalOverlay" id="addOverlay"></div>
-            <div class="sheet" role="dialog" aria-modal="true" aria-label="${isRequest ? '신청하기' : '내역 추가'}">
+            <div class="sheet" role="dialog" aria-modal="true" aria-label="${isRequest ? '출고 신청하기' : '내역 추가'}">
               <div class="sheetHead">
-                <div>${isRequest ? '신청하기' : '내역 추가'}</div>
+                <div>${isRequest ? '출고 신청하기' : '내역 추가'}</div>
                 <button class="sheetClose" id="addClose">닫기</button>
               </div>
               <div class="sheetBody">
@@ -3442,7 +3371,7 @@ async function insertLogsBulk(rows){
                 </div>
               </div>
               <div class="sheetFoot">
-                <button class="btn primary" id="addBtn">${isRequest ? '신청하기' : '추가'}</button>
+                <button class="btn primary" id="addBtn">${isRequest ? '출고 신청하기' : '추가'}</button>
               </div>
             </div>
           </div>
@@ -3574,7 +3503,7 @@ if(approveRequestsBtn){
       }
     }catch(err){
       console.error(err);
-      alert("출고 신청 승인 반영 실패: " + (err?.message || err));
+      alert("요청 승인 반영 실패: " + (err?.message || err));
       DB.mode = "error";
       DB.lastError = String(err?.message || err);
     }
@@ -3590,7 +3519,7 @@ if(rejectRequestsBtn){
     const rows = (it.requests || []).filter(r => selectedRequestKeys.has(r.__key));
     const pendingRows = rows.filter(r => (r.status || "pending") === "pending");
     if(pendingRows.length === 0){
-      alert("반려할 출고 신청 내역을 선택해주세요.");
+      alert("반려할 요청 내역을 선택해주세요.");
       return;
     }
 
@@ -3611,7 +3540,7 @@ if(rejectRequestsBtn){
       });
     }catch(err){
       console.error(err);
-      alert("출고 신청 반려 반영에 실패했습니다. warehouse_requests 권한과 RLS를 확인해주세요.");
+      alert("요청 반려 반영에 실패했습니다. warehouse_requests 권한과 RLS를 확인해주세요.");
       DB.mode = "error";
       DB.lastError = String(err?.message || err);
     }
@@ -3625,7 +3554,7 @@ if(rejectRequestsBtn){
         if(bulkDeleteRequests){
           bulkDeleteRequests.addEventListener("click", async ()=>{
             if(selectedRequestKeys.size === 0){
-              alert("삭제할 출고 신청 내역을 선택해주세요.");
+              alert("삭제할 신청 내역을 선택해주세요.");
               return;
             }
             const rowsToDelete = (it.requests || []).filter(r => selectedRequestKeys.has(r.__key));
