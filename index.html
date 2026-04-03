@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>창고수량재고</title>
-  <link rel="apple-touch-icon" href="images/sa-icon-03.jpg">
+  <link rel="apple-touch-icon" href="images/sa-icon-01.jpg">
 
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
@@ -743,6 +743,43 @@
     #bulkDeleteLogs:hover{
       background:#1f1f1f;
       border-color:#1f1f1f;
+    }
+
+
+    .reqApproveBtn{
+      background:rgba(37, 99, 235, 0.15);
+      border-color:rgba(37, 99, 235, 0.35);
+      color:#2563eb;
+    }
+
+    .reqApproveBtn:hover{
+      background:rgba(37, 99, 235, 0.22);
+      border-color:rgba(37, 99, 235, 0.45);
+      color:#1d4ed8;
+    }
+
+    .reqRejectBtn{
+      background:rgba(198, 62, 62, 0.12);
+      border-color:rgba(198, 62, 62, 0.28);
+      color:#c63e3e;
+    }
+
+    .reqRejectBtn:hover{
+      background:rgba(198, 62, 62, 0.18);
+      border-color:rgba(198, 62, 62, 0.38);
+      color:#b42318;
+    }
+
+    #openAdd{
+      background:rgba(37, 99, 235, 0.15);
+      border-color:rgba(37, 99, 235, 0.35);
+      color:#2563eb;
+    }
+
+    #openAdd:hover{
+      background:rgba(37, 99, 235, 0.22);
+      border-color:rgba(37, 99, 235, 0.45);
+      color:#1d4ed8;
     }
 
     .headerFilterDate,
@@ -1510,6 +1547,46 @@
       .authTitle{ font-size:17px; }
       .authBtn{ min-width:92px; height:42px; font-size:13px; }
     }
+
+    /* 승인 - 파랑 (불투명) */
+    .reqApproveBtn{
+      background:rgba(37, 99, 235, 0.15);
+      border-color:#2563eb;
+      color:#2563eb;
+    }
+
+    .reqApproveBtn:hover{
+      background:rgba(37, 99, 235, 0.25);
+      border-color:#2563eb;
+      color:#2563eb;
+    }
+
+    /* 반려 - 빨강 (불투명) */
+    .reqRejectBtn{
+      background:rgba(198, 62, 62, 0.15);
+      border-color:#c63e3e;
+      color:#c63e3e;
+    }
+
+    .reqRejectBtn:hover{
+      background:rgba(198, 62, 62, 0.25);
+      border-color:#c63e3e;
+      color:#c63e3e;
+    }
+
+    /* 내역 추가 - 파랑 (불투명) */
+    .addLogBtn{
+      background:rgba(37, 99, 235, 0.15);
+      border-color:#2563eb;
+      color:#2563eb;
+    }
+
+    .addLogBtn:hover{
+      background:rgba(37, 99, 235, 0.25);
+      border-color:#2563eb;
+      color:#2563eb;
+    }
+
   </style>
 
 
@@ -3123,7 +3200,7 @@ async function insertLogsBulk(rows){
                     <div class="requestAdminActions">
                       ${isAdmin ? `<button class="selDelBtn reqApproveBtn" id="approveRequestsBtn" type="button">승인</button>
                       <button class="selDelBtn reqRejectBtn" id="rejectRequestsBtn" type="button">반려</button>` : ``}
-                      <button class="selDelBtn" id="bulkDeleteRequests" type="button">삭제</button>
+                      <button class="selDelBtn" id="bulkDeleteRequests" type="button">선택 삭제</button>
                     </div>
                   ` : ``}
                 </div>
@@ -3133,11 +3210,7 @@ async function insertLogsBulk(rows){
                       <div class="logHeadCell">
                         <input type="date" id="reqDateFilter" class="headerFilterDate" value="${reqDateFilter}">
                       </div>
-                      <div class="logHeadCell">
-                        <select id="reqTypeSel" class="headerFilterSelect" disabled>
-                          <option value="신청" selected>신청</option>
-                        </select>
-                      </div>
+                      <div class="logHeadCell"><div class="logHeadLabel">구분</div></div>
                       <div class="logHeadCell">
                         <select id="reqDeptSel" class="headerFilterSelect">
                           <option value="전체" ${reqDeptFilter === "전체" ? "selected" : ""}>전체 부서</option>
@@ -3195,14 +3268,26 @@ async function insertLogsBulk(rows){
                 <div class="divider"></div>
                 <div class="boxTitleRow" style="margin-top:0; justify-content:space-between;">
                   <p class="boxTitle">입출고 내역</p>
-                  ${isAdmin ? `<button class="btn primary" id="openAdd" type="button">내역 추가</button>` : ``}
                 </div>
                 <div class="logBox">
                   <div class="logMinWidth">
-                    <div class="logHead">
-                      <div class="logHeadCell"><div class="logHeadLabel">날짜</div></div>
-                      <div class="logHeadCell"><div class="logHeadLabel">구분</div></div>
-                      <div class="logHeadCell"><div class="logHeadLabel">부서</div></div>
+                    <div class="logHead subtleHead">
+                      <div class="logHeadCell">
+                        <input type="date" id="logDateFilter" class="headerFilterDate" value="${logDateFilter}">
+                      </div>
+                      <div class="logHeadCell">
+                        <select id="logTypeSel" class="headerFilterSelect">
+                          <option value="전체" ${logTypeFilter === "전체" ? "selected" : ""}>전체</option>
+                          <option value="출고" ${logTypeFilter === "출고" ? "selected" : ""}>출고</option>
+                          <option value="입고" ${logTypeFilter === "입고" ? "selected" : ""}>입고</option>
+                        </select>
+                      </div>
+                      <div class="logHeadCell">
+                        <select id="logDeptSel" class="headerFilterSelect">
+                          <option value="전체" ${logDeptFilter === "전체" ? "selected" : ""}>전체 부서</option>
+                          ${allDepts.map(d => `<option value="${escapeAttr(d)}" ${logDeptFilter === d ? "selected" : ""}>${escapeHtml(d)}</option>`).join("")}
+                        </select>
+                      </div>
                       <div class="logHeadCell"><div class="logHeadLabel">담당자</div></div>
                       <div class="logHeadCell"><div class="logHeadLabel">수량</div></div>
                     </div>
@@ -3212,10 +3297,19 @@ async function insertLogsBulk(rows){
                 ${isAdmin ? `
                   <div class="adminBottomRow">
                     <div class="adminBottomLeft">
-                    
+                      <span> </span>
+                      <div class="stockInline">
+                        <button class="stockInlineValue" id="editBaseStockBtn" type="button">기존재고 <b>${Number(it.baseStock || 0)}</b></button>
+                        <div class="stockInlineEdit" id="baseStockEditRow">
+                          <input class="stockInlineInput" id="baseStockInput" inputmode="numeric" value="${Number(it.baseStock || 0)}" />
+                          <button class="stockInlineMini" id="saveBaseStockBtn" type="button">저장</button>
+                          <button class="miniBtn" id="cancelBaseStockBtn" type="button">취소</button>
+                        </div>
+                      </div>
                     </div>
                     <div class="adminBottomRight">
-                      <button class="selDelBtn" id="bulkDeleteLogs" type="button">삭제</button>
+                      <button class="btn addLogBtn" id="openAdd" type="button">내역 추가</button>
+                      <button class="selDelBtn" id="bulkDeleteLogs" type="button">선택 삭제</button>
                     </div>
                   </div>
                   <div class="dangerBox">
