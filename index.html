@@ -2375,7 +2375,7 @@ async function getCurrentUserEmail(){
         qty: Number(r.qty||0),
         department: r.dept || "-",
         requester_name: r.person || "",
-        requester_email: await getCurrentUserEmail(),
+        requester_email: (await getCurrentUserEmail()) || "",
         request_note: null,
         status: "pending",
         approved_at: null,
@@ -3492,8 +3492,8 @@ if(rejectRequestsBtn){
           }catch(err){
             console.error(err);
             alert(isRequest
-              ? "신청 저장에 실패했습니다. warehouse_requests 테이블과 RLS를 확인해주세요."
-              : "DB 저장에 실패했습니다. 권한/RLS 설정을 확인해주세요.");
+              ? `신청 저장 실패: ${err?.message || err}`
+              : `DB 저장 실패: ${err?.message || err}`);
             DB.mode = "error";
             DB.lastError = String(err?.message || err);
           }
