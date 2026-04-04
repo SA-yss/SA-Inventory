@@ -2519,6 +2519,30 @@ async function updateRequestStatusByIds(ids, status, meta = {}){
   if(error) throw error;
 }
 
+async function approveRequestByRpc(requestId, approvedBy){
+  if(!dbReady()) throw new Error("supabaseClient not ready");
+  const numericId = Number(requestId);
+  if(!Number.isFinite(numericId)) throw new Error("요청 ID가 올바르지 않습니다.");
+  const { data, error } = await supabaseClient.rpc("approve_warehouse_request", {
+    p_request_id: numericId,
+    p_approved_by: approvedBy || ""
+  });
+  if(error) throw error;
+  return Array.isArray(data) ? (data[0] || null) : (data || null);
+}
+
+async function rejectRequestByRpc(requestId, approvedBy){
+  if(!dbReady()) throw new Error("supabaseClient not ready");
+  const numericId = Number(requestId);
+  if(!Number.isFinite(numericId)) throw new Error("요청 ID가 올바르지 않습니다.");
+  const { data, error } = await supabaseClient.rpc("reject_warehouse_request", {
+    p_request_id: numericId,
+    p_approved_by: approvedBy || ""
+  });
+  if(error) throw error;
+  return Array.isArray(data) ? (data[0] || null) : (data || null);
+}
+
 async function decreaseStock(itemId, amount){
   if(!dbReady()) return null;
 
@@ -3452,64 +3476,25 @@ if(approveRequestsBtn){
       return;
     }
 
-    const today = getToday();
     const approverEmail = await getCurrentUserEmail();
-    const logsToInsert = pendingRows.map(r => {
-      const logKey = `reqlog_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-      return {
-        item_id: it.id,
-        qty: Number(r.qty || 0),
-        requestRow: r,
-        row: {
-          d: today,
-          t: "출고",
-          dept: r.dept || "-",
-          person: r.person || "(입력)",
-          qty: Number(r.qty || 0),
-          __key: logKey
-        }
-      };
-    });
 
     try{
-      let latestStock = null;
-
-      for(const entry of logsToInsert){
-        latestStock = await decreaseStock(it.id, entry.qty);
-        entry.requestRow.status = "approved";
-        entry.requestRow.approved_at = today;
-        entry.requestRow.approved_by = approverEmail || "";
-        entry.requestRow.processed_log_key = entry.row.__key;
-      }
-
-      if(typeof latestStock === "number"){
-        it.baseStock = latestStock;
-      }
-
-      for(const entry of logsToInsert){
-        it.logs = it.logs || [];
-        it.logs.push(normalizeLog(entry.row));
-      }
-      saveAllLocal();
-
-      await insertLogsBulk(logsToInsert.map(({ item_id, row }) => ({ item_id, row })));
-
       for(const r of pendingRows){
-        await updateRequestStatusByIds([r._dbid], "approved", {
-          approved_at: today,
-          approved_by: approverEmail || "",
-          processed_log_key: r.processed_log_key || ""
-        });
+        if(!r._dbid){
+          throw new Error("DB 요청 ID가 없습니다.");
+        }
+        await approveRequestByRpc(r._dbid, approverEmail || "");
       }
+
+      await loadAllFromDB_FORCE();
+      selectedRequestKeys.clear();
+      render();
     }catch(err){
       console.error(err);
       alert("요청 승인 반영 실패: " + (err?.message || err));
       DB.mode = "error";
       DB.lastError = String(err?.message || err);
     }
-
-    selectedRequestKeys.clear();
-    render();
   });
 }
 
@@ -3523,30 +3508,25 @@ if(rejectRequestsBtn){
       return;
     }
 
-    const today = getToday();
     const approverEmail = await getCurrentUserEmail();
-    pendingRows.forEach(r => {
-      r.status = "rejected";
-      r.approved_at = today;
-      r.approved_by = approverEmail || "";
-    });
-    saveAllLocal();
 
     try{
-      await updateRequestStatusByIds(pendingRows.map(r => r._dbid), "rejected", {
-        approved_at: today,
-        approved_by: approverEmail || "",
-        processed_log_key: null
-      });
+      for(const r of pendingRows){
+        if(!r._dbid){
+          throw new Error("DB 요청 ID가 없습니다.");
+        }
+        await rejectRequestByRpc(r._dbid, approverEmail || "");
+      }
+
+      await loadAllFromDB_FORCE();
+      selectedRequestKeys.clear();
+      render();
     }catch(err){
       console.error(err);
-      alert("요청 반려 반영에 실패했습니다. warehouse_requests 권한과 RLS를 확인해주세요.");
+      alert("요청 반려 반영 실패: " + (err?.message || err));
       DB.mode = "error";
       DB.lastError = String(err?.message || err);
     }
-
-    selectedRequestKeys.clear();
-    render();
   });
 }
 
