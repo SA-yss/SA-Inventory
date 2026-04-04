@@ -47,6 +47,11 @@
 
     *{box-sizing:border-box}
 
+    body.preboot #app,
+    body.preboot .fab{
+      visibility:hidden;
+    }
+
     html{scroll-behavior:smooth}
 
     body{
@@ -1594,7 +1599,7 @@
 
 </head>
 
-<body>
+<body class="preboot">
   <div class="wrap">
     <div class="topbar" id="topbar">
       <div class="brand">
@@ -3919,10 +3924,12 @@ if(rejectRequestsBtn){
 
       if(!location.hash) location.hash = "#/login";
 
+      renderLoginPage();
+      document.body.classList.remove("preboot");
+
       const ok = initSupabase();
       if(!ok){
         DB.mode = "local";
-        router();
         return;
       }
 
