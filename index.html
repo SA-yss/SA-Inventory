@@ -220,20 +220,23 @@
 }
 
 .sectionAddBtn{
-  background:#84cdc9;
-  border-color:#84cdc9;
-  color:#fff;
-  min-width:auto;
-  padding:0 14px;
+  background:#84cdc9 !important;
+  border-color:#84cdc9 !important;
+  color:#fff !important;
 }
 
 .sectionAddBtn:hover{
-  background:#73c1bc;
-  border-color:#73c1bc;
-  color:#fff;
+  background:#73c1bc !important;
+  border-color:#73c1bc !important;
+  color:#fff !important;
 }
 
-
+.sectionAddBtn:active{
+  background:#fff !important;
+  border-color:#84cdc9 !important;
+  color:#84cdc9 !important;
+}
+}
     .secHead h2{
       margin:0;
       font-size:12px;
@@ -3034,6 +3037,7 @@ const navReload = document.getElementById("navReload");
       topbar.style.display = "none";
       if(topbarLogo) topbarLogo.classList.remove("show");
       document.body.classList.remove("mode-request", "mode-list", "mode-admin");
+      if(fabAddItem) fabAddItem.style.display = "none";
 
       const hideHeader = ["#/signup", "#/find-id", "#/reset-password"].includes(location.hash);
 
@@ -3271,6 +3275,7 @@ const navReload = document.getElementById("navReload");
       topbar.style.display = "none";
       if(topbarLogo) topbarLogo.classList.remove("show");
       document.body.classList.remove("mode-request", "mode-list", "mode-admin");
+      if(fabAddItem) fabAddItem.style.display = "none";
 
       const isAdmin = await isAdminUser();
 
@@ -4128,9 +4133,14 @@ const navReload = document.getElementById("navReload");
     }
 
     async function updateFabVisibility(){
-      const hash = location.hash || "#/";
-      const isAdminHome = hash === "#/admin" && await isAdminUser();
-      fabAddItem.style.display = isAdminHome ? "inline-flex" : "none";
+      const hash = location.hash || "#/login";
+      const hideFab = ["#/login", "#/signup", "#/find-id", "#/reset-password", "#/"] .includes(hash)
+        || hash === "#/admin"
+        || /^#\/admin\//.test(hash);
+
+      if(fabAddItem){
+        fabAddItem.style.display = hideFab ? "none" : "";
+      }
     }
 
     async function router(){
