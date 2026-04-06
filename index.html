@@ -981,13 +981,13 @@
       letter-spacing:0.04em;
     }
 
-    .field input, .field select, .authInput{
+    .field input, .field select, .authInput{ /*홈 로그인-아이디,비번 입력*/
       width:100%;
       border:1px solid var(--line);
       border-radius:0;
       padding:13px 14px;
       font-size:13px;
-      font-weight:600;
+      font-weight:500;
       outline:none;
       background:#fff;
       color:#111;
@@ -1041,7 +1041,7 @@
     .fab:active{ transform:translateY(0.5px); }
 
     .mainHome{
-      width:min(100%, 360px);
+      width:min(100%, 400px);
       margin:0 auto;
       padding:100px 0 64px;
       text-align:center;
@@ -1248,7 +1248,7 @@
     }
 
     .loginWrap{
-      width:min(100%, 360px);
+      width:min(100%, 380px);
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -1261,7 +1261,7 @@
 
     .loginLogoBox{
       width:100%;
-      height:100px;
+      height:120px;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -1277,7 +1277,7 @@
     }
 
     .loginForm{
-      width:72%;
+      width:82%; 
       min-width:220px;
       max-width:300px;
       margin-top:0;
@@ -1285,7 +1285,7 @@
 
     .loginInput{
       width:100%;
-      height:36px;
+      height:40px;
       border:0;
       background:#f4f4f487;
       padding:0 17px;
@@ -1302,23 +1302,23 @@
     }
 
     #signupPasswordConfirm,
-#findIdEmail,
-#resetPasswordEmail{
-  margin-bottom:24px;
+    #findIdEmail,
+    #resetPasswordEmail{
+     margin-bottom:24px;
 }
-.loginForm input:last-of-type{
-  margin-bottom:24px;
+    .loginForm input:last-of-type{
+     margin-bottom:24px;
 }
 
     .loginSubLinks{
       display:flex;
       align-items:center;
       justify-content:center;
-      gap:14px;
-      font-size:10px;
+      gap:13px;
+      font-size:11px;
       color:#9b9b9b;
       font-weight:400;
-      margin:16px 0 34px;
+      margin:14px 0 30px;
       font-family:'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
       flex-wrap:wrap;
     }
@@ -1332,13 +1332,13 @@
 
     .loginBtn,
     .authSecondaryBtn{
-      width:72%;
-      min-width:220px;
+      width:84%;
+      min-width:170px;
       height:39px;
       border:0;
       background:#84cdc9;;
       color:#fff;
-      font-size:13px;
+      font-size:14px;
       font-weight:500;
       cursor:pointer;
       display:block;
@@ -1413,7 +1413,7 @@
     }
 
     @media (max-width: 980px){
-      .wrap{ width:min(calc(100% - 34px), var(--content-max)); }
+      .wrap{ width:min(calc(100% - 32px), var(--content-max)); }
       .row{ grid-template-columns:1fr; }
       .stock{ min-height:86px; }
       .listGrid{ grid-template-columns:1fr 1fr; }
