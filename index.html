@@ -1076,9 +1076,9 @@
   right:0;
   bottom:0;
   z-index:9997;
-  height:72px;
-  background:#f3f3f5;
-  border-top:1px solid #d9d9d9;
+  height:60px;
+  background:#f3f3f58f;
+  border-top:0.2px solid #d9d9d9;
   display:grid;
   grid-template-columns:repeat(4, 1fr);
   align-items:center;
@@ -1092,7 +1092,7 @@
   border:0;
   background:transparent;
   width:100%;
-  height:56px;
+  height:46px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -1101,10 +1101,10 @@
 }
 
 .bottomNavBtn svg{
-  width:26px;
-  height:26px;
-  stroke:#111;
-  stroke-width:2.2;
+  width:20px;
+  height:20px;
+  stroke:#11111199;
+  stroke-width:1.5;
   fill:none;
   stroke-linecap:round;
   stroke-linejoin:round;
@@ -1112,11 +1112,11 @@
 }
 
 body{
-  padding-bottom:68px;
+  padding-bottom:56px;
 }
 
 .fab{
-  bottom:96px;
+  bottom:86px;
 }
 
 @media (max-width: 980px){
@@ -1129,13 +1129,13 @@ body{
   }
 
   .bottomNavBtn svg{
-    width:24px;
-    height:24px;
+    width:20px;
+    height:20px;
   }
 
   .fab{
     right:16px;
-    bottom:84px;
+    bottom:74px;
   }
 }
 
@@ -1848,6 +1848,56 @@ body{
       border-color:#2563eb;
       color:#2563eb;
     }
+
+    body.auth-page{
+      padding-bottom:0 !important;
+      overflow:hidden;
+    }
+
+    html.auth-page{
+      overflow:hidden;
+    }
+
+    body.auth-page .wrap{
+      padding-bottom:0 !important;
+    }
+
+    @media (max-width: 768px){
+      body.auth-page,
+      html.auth-page{
+        height:100%;
+        overflow:hidden;
+      }
+
+      body.auth-page .wrap,
+      body.auth-page #app{
+        min-height:100dvh;
+      }
+
+      body.auth-page .loginScreen{
+        min-height:100dvh;
+        height:100dvh;
+        padding:48px 16px 8px !important;
+        align-items:center;
+        box-sizing:border-box;
+        overflow:hidden;
+      }
+
+      body.auth-page .loginWrap{
+        width:min(100%, 360px);
+        max-width:360px;
+        margin:0 auto;
+      }
+
+      body.auth-page .loginForm,
+      body.auth-page .signupForm,
+      body.auth-page .findIdForm,
+      body.auth-page .resetPwForm{
+        margin-top:0 !important;
+        padding-bottom:0 !important;
+      }
+    }
+
   </style>
 </head>
 
@@ -3023,7 +3073,8 @@ const navReload = document.getElementById("navReload");
     }
 
     function setBodyMode(mode){
-      document.body.classList.remove("mode-request", "mode-list", "mode-admin");
+      document.body.classList.remove("mode-request", "mode-list", "mode-admin", "auth-page");
+      document.documentElement.classList.remove("auth-page");
       if(mode === "request"){
         document.body.classList.add("mode-request");
       }else if(mode === "list"){
@@ -3037,6 +3088,8 @@ const navReload = document.getElementById("navReload");
       topbar.style.display = "none";
       if(topbarLogo) topbarLogo.classList.remove("show");
       document.body.classList.remove("mode-request", "mode-list", "mode-admin");
+      document.body.classList.add("auth-page");
+      document.documentElement.classList.add("auth-page");
       if(fabAddItem) fabAddItem.style.display = "none";
 
       const hideHeader = ["#/signup", "#/find-id", "#/reset-password"].includes(location.hash);
@@ -3274,7 +3327,8 @@ const navReload = document.getElementById("navReload");
     async function renderMainHome(){
       topbar.style.display = "none";
       if(topbarLogo) topbarLogo.classList.remove("show");
-      document.body.classList.remove("mode-request", "mode-list", "mode-admin");
+      document.body.classList.remove("mode-request", "mode-list", "mode-admin", "auth-page");
+      document.documentElement.classList.remove("auth-page");
       if(fabAddItem) fabAddItem.style.display = "none";
 
       const isAdmin = await isAdminUser();
