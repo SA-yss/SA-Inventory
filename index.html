@@ -3496,7 +3496,7 @@ const navReload = document.getElementById("navReload");
       }
 
       if(fabAddItem){
-        fabAddItem.style.display = mode === "admin" ? "none" : "";
+        fabAddItem.style.display = (mode === "admin" || mode === "list") ? "none" : "";
       }
 
       app.querySelectorAll("[data-open]").forEach(el => {
@@ -4190,7 +4190,9 @@ const navReload = document.getElementById("navReload");
       const hash = location.hash || "#/login";
       const hideFab = ["#/login", "#/signup", "#/find-id", "#/reset-password", "#/"] .includes(hash)
         || hash === "#/admin"
-        || /^#\/admin\//.test(hash);
+        || /^#\/admin\//.test(hash)
+        || hash === "#/list"
+        || /^#\/list\//.test(hash);
 
       if(fabAddItem){
         fabAddItem.style.display = hideFab ? "none" : "";
