@@ -1575,6 +1575,47 @@
       .requestImgRow{ gap:12px; padding:0; justify-content:center; }
       .requestImgRow .requestImgBox + .requestImgBox{ padding-left:0; margin-left:0; }
 
+      .detailSectionHead{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:6px;
+        flex-wrap:nowrap;
+        min-width:0;
+      }
+
+      .detailSectionHead .boxTitle{
+        flex:1 1 auto;
+        min-width:0;
+        margin:0;
+        font-size:14px;
+        line-height:1.2;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+
+      .requestAdminActions{
+        display:flex;
+        align-items:center;
+        justify-content:flex-end;
+        gap:4px;
+        margin-left:auto;
+        flex:0 0 auto;
+        white-space:nowrap;
+      }
+
+      .requestAdminActions .btn,
+      .requestAdminActions .dangerBtn,
+      .requestAdminActions .selDelBtn,
+      .requestAdminActions .reqApproveBtn,
+      .requestAdminActions .reqRejectBtn{
+        min-width:52px;
+        height:28px;
+        padding:0 8px;
+        font-size:11px;
+      }
+
       .adminBottomRow,
       .commonBottomRow{ align-items:flex-start; }
 
@@ -4008,7 +4049,7 @@
 
       if(!location.hash) location.hash = "#/login";
 
-      renderLoginPage();
+      renderLoginPage(); 
       document.body.classList.remove("preboot");
 
       const ok = initSupabase();
